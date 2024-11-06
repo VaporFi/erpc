@@ -2,7 +2,15 @@ logLevel: debug
 
 database:
   evmJsonRpcCache:
+    {{ if getenv "DATABASE_URL" }}
+    driver: postgresql
+    postgresql:
+      connectionUri: >-
+        {{ getenv "DATABASE_URL" }}
+      table: rpc_cache
+    {{ else }}
     driver: memory
+    {{ end }}
 
 server:
   httpHostV4: "0.0.0.0"
