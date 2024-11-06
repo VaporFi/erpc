@@ -23,4 +23,4 @@ COPY --from=builder /usr/local/bin/gomplate /usr/local/bin/gomplate
 COPY erpc.yaml /root/erpc.yaml.template
 
 # Generate the final config file at runtime
-CMD ["/bin/sh", "-c", "gomplate -f /root/erpc.yaml.template -o /root/erpc.yaml && ./erpc-server"]
+CMD ["/bin/sh", "-c", "gomplate -f /root/erpc.yaml.template -o /root/erpc.yaml && /root/erpc-server"]
