@@ -26,6 +26,6 @@ COPY --from=base /usr/local/bin/gomplate /usr/local/bin/gomplate
 # Copy the template config
 COPY erpc.yaml ./erpc.yaml.template
 
-
+EXPOSE 4000 4001
 # Generate the final config file at runtime
 CMD ["/bin/sh", "-c", "gomplate -f ./erpc.yaml.template -o ./erpc.yaml && ./erpc-server"]
