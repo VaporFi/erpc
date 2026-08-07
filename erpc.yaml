@@ -31,23 +31,29 @@ projects:
         endpoint: https://api.avax.network/ext/bc/C/rpc
         evm:
           chainId: 43114
+          skipSyncingCheck: true
       - id: avalanche-publicnode
         endpoint: https://avalanche-c-chain-rpc.publicnode.com
         evm:
           chainId: 43114
+          skipSyncingCheck: true
       - id: telos-rpc
         endpoint: https://rpc.telos.net
         evm:
           chainId: 40
+          skipSyncingCheck: true
       - id: telos-1rpc
         endpoint: https://1rpc.io/telos/evm
         evm:
           chainId: 40
+          skipSyncingCheck: true
       - id: base-mainnet
         endpoint: https://mainnet.base.org
         evm:
           chainId: 8453
+          skipSyncingCheck: true
       - id: base-publicnode
         endpoint: https://base-rpc.publicnode.com
         evm:
           chainId: 8453
+          skipSyncingCheck: true
