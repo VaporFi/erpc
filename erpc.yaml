@@ -1,22 +1,9 @@
-logLevel: debug
-
-database:
-  evmJsonRpcCache:
-    {{ if getenv "DATABASE_URL" }}
-    driver: postgresql
-    postgresql:
-      connectionUri: >-
-        {{ getenv "DATABASE_URL" }}
-      table: rpc_cache
-    {{ else }}
-    driver: memory
-    {{ end }}
+logLevel: warn
 
 server:
   listenV4: true
   httpHostV4: "0.0.0.0"
   listenV6: false
-  httpHostV6: "[::]"
   httpPort: 4000
   maxTimeout: 30s
 
@@ -25,19 +12,42 @@ metrics:
   listenV4: true
   hostV4: "0.0.0.0"
   listenV6: false
-  hostV6: "[::]"
   port: 4001
 
 projects:
   - id: main
+    networks:
+      - architecture: evm
+        evm:
+          chainId: 43114
+      - architecture: evm
+        evm:
+          chainId: 40
+      - architecture: evm
+        evm:
+          chainId: 8453
     upstreams:
-      {{ if getenv "ALCHEMY_API_KEY" }}
-      - endpoint: alchemy://{{ getenv "ALCHEMY_API_KEY" }}
-      {{ end }}
-      {{ if getenv "BLASTAPI_API_KEY" }}
-      - endpoint: blastapi://{{ getenv "BLASTAPI_API_KEY" }}
-      {{ end }}
-      {{ if getenv "DRPC_API_KEY" }}
-      - endpoint: drpc://{{ getenv "DRPC_API_KEY" }}
-      {{ end }}
-      - endpoint: envio://rpc.hypersync.xyz
+      - id: avalanche-api
+        endpoint: https://api.avax.network/ext/bc/C/rpc
+        evm:
+          chainId: 43114
+      - id: avalanche-publicnode
+        endpoint: https://avalanche-c-chain-rpc.publicnode.com
+        evm:
+          chainId: 43114
+      - id: telos-rpc
+        endpoint: https://rpc.telos.net
+        evm:
+          chainId: 40
+      - id: telos-1rpc
+        endpoint: https://1rpc.io/telos/evm
+        evm:
+          chainId: 40
+      - id: base-mainnet
+        endpoint: https://mainnet.base.org
+        evm:
+          chainId: 8453
+      - id: base-publicnode
+        endpoint: https://base-rpc.publicnode.com
+        evm:
+          chainId: 8453

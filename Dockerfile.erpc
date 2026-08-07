@@ -1,31 +1,6 @@
-# Build stage
-FROM alpine:3.18 AS base
-RUN apk add --no-cache curl && \
-    curl -L https://github.com/hairyhenderson/gomplate/releases/download/v3.11.3/gomplate_linux-amd64 -o /usr/local/bin/gomplate && \
-    chmod +x /usr/local/bin/gomplate
+FROM ghcr.io/erpc/erpc:latest
 
-
-FROM base as runner
-WORKDIR /root
-
-# Set environment variables
-ARG ALCHEMY_API_KEY
-ARG BLASTAPI_API_KEY
-ARG DRPC_API_KEY
-ARG DATABASE_URL
-
-ENV ALCHEMY_API_KEY=${ALCHEMY_API_KEY}
-ENV BLASTAPI_API_KEY=${BLASTAPI_API_KEY}
-ENV DRPC_API_KEY=${DRPC_API_KEY}
-ENV DATABASE_URL=${DATABASE_URL}
-
-# Copy the erpc binary from the base image
-COPY --from=ghcr.io/erpc/erpc:latest /root ./
-# Copy gomplate from base
-COPY --from=base /usr/local/bin/gomplate /usr/local/bin/gomplate
-# Copy the template config
-COPY erpc.yaml ./erpc.yaml.template
+COPY erpc.yaml /root/erpc.yaml
 
 EXPOSE 4000 4001
-# Generate the final config file at runtime
-CMD ["/bin/sh", "-c", "gomplate -f ./erpc.yaml.template -o ./erpc.yaml && ./erpc-server"]
+CMD ["/erpc-server"]
