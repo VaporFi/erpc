@@ -1,4 +1,4 @@
-FROM ghcr.io/erpc/erpc:latest
+FROM ghcr.io/erpc/erpc@sha256:c728ea76ffdd50f6adf6ffadb224a74ecb720b41c4748fad3688ff44db3f7955
 
 COPY erpc.yaml /root/erpc.yaml
 

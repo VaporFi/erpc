@@ -34,6 +34,9 @@ projects:
           skipSyncingCheck: true
       - id: avalanche-publicnode
         endpoint: https://avalanche-c-chain-rpc.publicnode.com
+        # PublicNode rejects indexer backfill log filters with HTTP 403 / -32602.
+        ignoreMethods:
+          - eth_getLogs
         evm:
           chainId: 43114
           skipSyncingCheck: true
