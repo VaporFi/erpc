@@ -29,13 +29,29 @@ projects:
     upstreams:
       - id: avalanche-api
         endpoint: https://api.avax.network/ext/bc/C/rpc
+        autoIgnoreUnsupportedMethods: false
         evm:
           chainId: 43114
           skipSyncingCheck: true
       - id: avalanche-publicnode
         endpoint: https://avalanche-c-chain-rpc.publicnode.com
-        # PublicNode rejects indexer backfill log filters with HTTP 403 / -32602.
+        # PublicNode rejects backfill logs and returns null for old blocks.
+        # Use avalanche-api for logs; avalanche-api/dRPC for historical blocks.
         ignoreMethods:
+          - eth_getLogs
+          - eth_getBlockByNumber
+        evm:
+          chainId: 43114
+          skipSyncingCheck: true
+      - id: avalanche-drpc
+        endpoint: https://avalanche.drpc.org
+        autoIgnoreUnsupportedMethods: false
+        # Verified block/log reads, including historical logs. No archive eth_call claim.
+        ignoreMethods: ["*"]
+        allowMethods:
+          - eth_chainId
+          - eth_blockNumber
+          - eth_getBlockByNumber
           - eth_getLogs
         evm:
           chainId: 43114
@@ -52,11 +68,15 @@ projects:
           skipSyncingCheck: true
       - id: base-mainnet
         endpoint: https://mainnet.base.org
+        autoIgnoreUnsupportedMethods: false
         evm:
           chainId: 8453
           skipSyncingCheck: true
       - id: base-publicnode
         endpoint: https://base-rpc.publicnode.com
+        # Historical log requests require a PublicNode token; use base-mainnet.
+        ignoreMethods:
+          - eth_getLogs
         evm:
           chainId: 8453
           skipSyncingCheck: true
