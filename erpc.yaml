@@ -14,6 +14,14 @@ metrics:
   listenV6: false
   port: 4001
 
+rateLimiters:
+  budgets:
+    - id: base-mainnet
+      rules:
+        - method: "*"
+          maxCount: 5
+          period: 1s
+
 projects:
   - id: main
     networks:
@@ -26,6 +34,7 @@ projects:
       - architecture: evm
         evm:
           chainId: 8453
+          getLogsSplitOnError: true
     upstreams:
       - id: avalanche-api
         endpoint: https://api.avax.network/ext/bc/C/rpc
@@ -69,13 +78,29 @@ projects:
       - id: base-mainnet
         endpoint: https://mainnet.base.org
         autoIgnoreUnsupportedMethods: false
+        # The public endpoint allows 5 requests per second per IP.
+        rateLimitBudget: base-mainnet
         evm:
           chainId: 8453
           skipSyncingCheck: true
       - id: base-publicnode
         endpoint: https://base-rpc.publicnode.com
-        # Historical log requests require a PublicNode token; use base-mainnet.
-        ignoreMethods:
+        # PublicNode serves logs for recent blocks only (about 30 days, 20000
+        # results per request) and rejects older ranges without a token.
+        autoIgnoreUnsupportedMethods: false
+        evm:
+          chainId: 8453
+          skipSyncingCheck: true
+          maxAvailableRecentBlocks: 1000000
+      - id: base-tenderly
+        endpoint: https://base.gateway.tenderly.co
+        # Verified for historical logs. Rejects ranges over about 500 blocks.
+        autoIgnoreUnsupportedMethods: false
+        ignoreMethods: ["*"]
+        allowMethods:
+          - eth_chainId
+          - eth_blockNumber
+          - eth_getBlockByNumber
           - eth_getLogs
         evm:
           chainId: 8453
