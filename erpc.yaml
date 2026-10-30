@@ -65,6 +65,23 @@ projects:
         evm:
           chainId: 43114
           skipSyncingCheck: true
+      - id: avalanche-tenderly
+        endpoint: https://avalanche.gateway.tenderly.co
+        autoIgnoreUnsupportedMethods: false
+        # Public gateway, no key. Verified for historical logs (220 days), 200
+        # address filters and ranges up to 10000 blocks. It answers HTTP 429
+        # above about 8 requests per second per IP. Do not add a rateLimitBudget:
+        # an exhausted budget returns HTTP 200 with error -32005, and Ponder
+        # only slows down on a real HTTP 429.
+        ignoreMethods: ["*"]
+        allowMethods:
+          - eth_chainId
+          - eth_blockNumber
+          - eth_getBlockByNumber
+          - eth_getLogs
+        evm:
+          chainId: 43114
+          skipSyncingCheck: true
       - id: telos-rpc
         endpoint: https://rpc.telos.net
         evm:
